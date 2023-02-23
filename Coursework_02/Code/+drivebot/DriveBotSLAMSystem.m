@@ -77,6 +77,17 @@ classdef DriveBotSLAMSystem < minislam.slam.SLAMSystem
             this.keepFirstPredictionEdge = false;
         end
         
+        % Destroy the graph when we destroy the SLAM system.
+        % Without this, MATLAB will crash whenever this object is destroyed.
+
+        function delete(this)
+            vertices = this.graph.vertices();
+
+            for v = 1 : length(vertices)
+                this.graph.removeVertex(vertices{v});
+            end
+        end
+        
         % Recommend if an optimization is a good idea. Based on an event,
         % some activities (e.g., such as loop closing) can have a very big
         % impact on the estimates. The logic we have here just recommends
